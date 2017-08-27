@@ -633,7 +633,49 @@ var Collection = function (vm, collection) {
     });
   }
 
+  self.getTemplateField = function (name, fields) {
+    var _field = null;
+    $.each(fields, function (index, field) {
+      if (field && field.name() == name) {
+        _field = field;
+        return false;
+      }
+    });
+    return _field;
+  };
+
+  
   self._addObservablesToFacet = function(facet, vm) {
+    facet.properties.facets_form.metrics = ko.computed(function() {
+      var _field = self.getTemplateField(facet.properties.facets_form.field(), self.template.fieldsAttributes());
+
+      if (! _field) {
+        return HIT_OPTIONS;
+      }
+      else if (isNumericColumn(_field.type())) {
+    	  return [
+    	         // { value: "count", label: "${ _('Count') }" },
+    	          { value: "unique", label: "${ _('Unique Count') }" },
+    	          { value: "avg", label: "${ _('Average') }" },
+    	          { value: "sum", label: "${ _('Sum') }" },
+    	          { value: "min", label: "${ _('Min') }" },
+    	          { value: "max", label: "${ _('Max') }" },
+    	          { value: "median", label: "${ _('Median') }" },
+    	          { value: "percentile", label: "${ _('Percentiles') }" },
+    	          { value: "mul", label: "${ _('Multiply') }" },
+    	          { value: "add", label: "${ _('Add') }" },
+    	          { value: "sub", label: "${ _('Substract') }" },
+    	        ]
+      } else if (isDateTimeColumn(_field.type())) {
+    	  return [ { value: "unique", label: "${ _('Unique Count') }" },
+    	           { value: "ms", label: "${ _('Substract dates') }" },];
+      } else { // String
+    	  facet.properties.facets_form.aggregate.function('count');
+    	return [  { value: "count", label: "Count" },
+    	          { value: "unique", label: "${ _('Unique Count') }" }, ];
+      }
+    });	 	
+
     facet.properties.limit.subscribe(function () {
       vm.search();
     });
@@ -909,8 +951,9 @@ var Collection = function (vm, collection) {
       'field': ko.mapping.toJS(facet.properties.facets_form.field),
       'limit': ko.mapping.toJS(facet.properties.facets_form.limit),
       'mincount': ko.mapping.toJS(facet.properties.facets_form.mincount),
-      'aggregate': ko.mapping.toJS(facet.properties.facets_form.aggregate),
+      'aggregate': ko.mapping.toJS(facet.properties.facets_form.aggregate)
     });
+    
 
     facet.properties.facets_form.field(null);
     facet.properties.facets_form.limit(5);
@@ -1061,17 +1104,6 @@ var Collection = function (vm, collection) {
     }
     return hasData;
   });
-
-  self.getTemplateField = function (name, fields) {
-    var _field = null;
-    $.each(fields, function (index, field) {
-      if (field && field.name() == name) {
-        _field = field;
-        return false;
-      }
-    });
-    return _field;
-  };
 
   self.template.fieldsModalFilter = ko.observable(""); // For UI
   self.template.fieldsModalType = ko.observable(""); // For UI

@@ -2093,7 +2093,7 @@ ${ dashboard.layout_skeleton(suffix='search') }
 <script type="text/html" id="metric-form">
   <div data-bind="visible: $root.isEditing" style="margin-bottom: 20px">
     <!-- ko if: $data.function() != 'field' -->
-      <select data-bind="options: HIT_OPTIONS, optionsText: 'label', optionsValue: 'value', value: $data.function" class="input-medium"></select>
+      <select data-bind="options: $parent.properties.facets_form.metrics, optionsText: 'label', optionsValue: 'value', value: $data.function" class="input-medium"></select>
     <!-- /ko -->
 
     <!-- ko if: $data.function() == 'field' -->
@@ -2114,7 +2114,7 @@ ${ dashboard.layout_skeleton(suffix='search') }
       <i class="fa fa-plus" title="${ _('Add') }"></i>
     <!-- /ko -->
 
-    <a href="javascript: void(0)" data-bind="click: function() { $parent.ops.pop($data); }">
+    <a href="javascript: void(0)" data-bind="visible: typeof $parent.ops != 'undefined', click: function() { $parent.ops.pop($data); }">
       <i class="fa fa-minus" title="${ _('Delete') }"></i>
     </a>
 
