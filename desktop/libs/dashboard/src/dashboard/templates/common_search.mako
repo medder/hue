@@ -2092,8 +2092,12 @@ ${ dashboard.layout_skeleton(suffix='search') }
 
 <script type="text/html" id="metric-form">
   <div data-bind="visible: $root.isEditing" style="margin-bottom: 20px">
-    <!-- ko if: $data.function() != 'field' -->
+    <!-- ko if: $data.function() != 'field' && $parent.properties -->
       <select data-bind="options: $parent.properties.facets_form.metrics, optionsText: 'label', optionsValue: 'value', value: $data.function" class="input-medium"></select>
+    <!-- /ko -->
+
+    <!-- ko if: $data.function() != 'field' && $data.metrics -->
+      <select data-bind="options: $data.metrics, optionsText: 'label', optionsValue: 'value', value: $data.function" class="input-medium"></select>
     <!-- /ko -->
 
     <!-- ko if: $data.function() == 'field' -->
