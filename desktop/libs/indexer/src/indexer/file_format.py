@@ -79,6 +79,7 @@ def get_file_format_instance(file, format_=None):
 
   return (matches[0] if matches else get_format_types()[0]).get_instance(file_stream, format_)
 
+
 class FileFormat(object):
   _name = None
   _description = None
@@ -164,6 +165,7 @@ class FileFormat(object):
 
     return obj
 
+
 class GrokkedFormat(FileFormat):
   _grok = None
   _customizable = False
@@ -184,6 +186,7 @@ class GrokkedFormat(FileFormat):
   @property
   def fields(self):
     return self._fields
+
 
 class HueLogFormat(GrokkedFormat):
   _name = "hue"
@@ -218,8 +221,10 @@ class HueLogFormat(GrokkedFormat):
       Field("protocol", "string")
     ]
 
+
 class GrokLineFormat(GrokkedFormat):
   _parse_type = "grok_line"
+
 
 class ApacheCombinedFormat(GrokLineFormat):
   _name = "combined_apache"
@@ -243,6 +248,7 @@ class ApacheCombinedFormat(GrokLineFormat):
       Field("field_line", "text_en")
     ]
 
+
 class RubyLogFormat(GrokLineFormat):
   _name = "ruby_log"
   _description = _("Ruby Log")
@@ -258,6 +264,7 @@ class RubyLogFormat(GrokLineFormat):
       Field("message", "text_en"),
       Field("field_line", "text_en")
     ]
+
 
 class SyslogFormat(GrokLineFormat):
   _name = "syslog"
@@ -461,7 +468,8 @@ class CSVFormat(FileFormat):
   def _get_sample_reader(self, sample):
     if self.line_terminator != '\n':
       sample = sample.replace('\n', '\\n')
-    return csv.reader(sample.split(self.line_terminator), delimiter=self.delimiter, quotechar=self.quote_char)
+    #return csv.reader(sample.split(self.line_terminator), delimiter=self.delimiter, quotechar=self.quote_char)
+    return csv.reader(open('/home/romain/Downloads/SFDC Cases Analysis (1).csv'))
 
   def _guess_field_names(self, sample):
     reader = self._get_sample_reader(sample)
